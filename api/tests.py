@@ -1,17 +1,21 @@
 from django.test import TestCase
+from rest_framework.test import APIRequestFactory
 from .models import *
+
 
 # Create your tests here.
 
-class RecordTestCase(TestCase):
-    def setUp(self):
-        Household.objects.create(name='deepanju')
-        User.objects.create(username='deepan')
+class BudgetTestCase(TestCase):
+  fixtures = ['users.json', 'households.json', 'master_budgets.json']
 
-    def test_objects_are_created(self):
-        h = Household.objects.get(name='deepanju')
-        user = User.objects.get(username='deepan')
-        print(h.__dict__)
-        print(user.__dict__)
+  def test_budget_is_created_if_it_does_not_exist(self):
+    assert len(Budget.objects.all()) == 0
+    for mb in MasterBudget.objects.all():
+      Budget.get_or_create_budget(mb)
+    assert len(Budget.objects.all()) == 3
+
+    for mb in MasterBudget.objects.all():
+      Budget.get_or_create_budget(mb)
+    assert len(Budget.objects.all()) == 3
 
 

@@ -1,8 +1,13 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from .category import Category
+from .budget import Budget
+import logging
+logger = logging.getLogger('django')
 
 class Record(models.Model):
+  #when querying for record list, i hard coded that this are the possible types.
+  # when switching to foreignkey types, change that as well
   TYPE_CHOICES = (
     ('Personal', 'Personal'),
     ('Household', 'Household')
@@ -24,19 +29,22 @@ class Record(models.Model):
   budget = models.ForeignKey('Budget', null=True, blank=True)
 
   def clean(self):
-    if self.category not in self.acceptable_categories():
+    if self.category is not None and self.category not in self.acceptable_categories():
       raise ValidationError({
         'category': "Invalid Category: {}".format(self.category)
       })
 
   def save(self, *args, **kwargs):
-    if (self.masterbudget is not None):
-      pass
-      # set the right budget here
-      # if one does not exist, create one
-      # if one exists, set it
-    super(Record, self).save(*args, **kwargs)
-
+    logger.info('save called')
+    if (self.masterbudget is not None) and self.budget is None:
+      self.budget = Budget.get_or_create_budget(self.masterbudget)
+    if self.household is None:
+      self.household = self.user.household
+    record = super(Record, self).save(*args, **kwargs)
 
   def __str__(self):
     return '{} - {}'.format(self.name, self.amount)
+
+
+
+

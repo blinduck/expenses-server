@@ -1,1 +1,6 @@
 .ipynb_checkpoints/
+*.pyc
+expenses/local_settings.py
+*.log
+api/fixtures/
+*.ipynb
