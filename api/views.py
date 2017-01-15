@@ -12,6 +12,9 @@ from datetime import datetime
 
 # Create your views here.
 
+def test(request):
+  return HttpResponse('testing')
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
