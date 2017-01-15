@@ -27,7 +27,6 @@ pandocfilters==1.4.1
 parse-rest==0.2.20141004
 pexpect==4.2.1
 pickleshare==0.7.4
-pkg-resources==0.0.0
 prompt-toolkit==1.0.9
 psycopg2==2.6.2
 ptyprocess==0.5.1
