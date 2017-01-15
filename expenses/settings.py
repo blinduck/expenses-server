@@ -135,7 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 STATIC_URL = '/dstatic/'
 #check out?
-STATIC_ROOT = '/home/ubuntu/expenses-server/static/'
+STATIC_ROOT = '/home/ubuntu/expenses-server/dstatic/'
 
 LOGGING = {
     'version': 1,
