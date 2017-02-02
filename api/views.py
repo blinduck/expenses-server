@@ -14,6 +14,7 @@ from django.db import transaction
 # Create your views here.
 
 def test(request):
+  print('test')
   return HttpResponse('testing')
 
 @api_view(['POST'])
