@@ -6,4 +6,4 @@ class Category(models.Model):
   household = models.ForeignKey('Household', null=True, blank=True)
 
   def __str__(self):
-    return "{} - {}".format(self.household, self.name)
+    return self.name

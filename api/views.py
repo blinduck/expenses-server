@@ -8,6 +8,7 @@ from .models import *
 from .permissions import IsOwner
 from django.contrib.auth import authenticate
 from datetime import datetime
+from django.db import transaction
 
 
 # Create your views here.
@@ -41,9 +42,18 @@ def base_data(request):
   }
   return Response(data)
 
-class RecordList(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+class RecordList(generics.GenericAPIView,
+                 mixins.ListModelMixin,
+                 mixins.CreateModelMixin):
   permission_classes = [IsAuthenticated]
-  serializer_class = RecordSerializer
+  # serializer_class = RecordCreateSerializer
+
+  def get_serializer_class(self, *args, **kwargs):
+    if self.request.method == 'GET':
+      return RecordListSerializer
+    elif self.request.method == 'POST':
+      return RecordCreateSerializer
+
   def get_queryset(self):
     startDate = datetime.utcfromtimestamp(float(self.request.query_params['startDate']))
     endDate = datetime.utcfromtimestamp(float(self.request.query_params['endDate']))
@@ -66,7 +76,7 @@ class RecordList(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateMo
 class RecordDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
   # todo implement proper object level permissions for the records.
   queryset = Record.objects.all()
-  serializer_class = RecordSerializer
+  serializer_class = RecordCreateSerializer
   permission_classes = [IsAuthenticated, IsOwner]
 
   def get(self, request, *args, **kwargs):
@@ -82,14 +92,52 @@ class BudgetList(generics.GenericAPIView, mixins.ListModelMixin):
   def get(self, request, *args, **kwargs):
     return self.list(request, *args, **kwargs)
 
-class MasterBudgetList(generics.GenericAPIView, mixins.ListModelMixin):
+class MasterBudgetList(generics.GenericAPIView,
+                       mixins.ListModelMixin,
+                       mixins.CreateModelMixin):
   permission_classes = [IsAuthenticated]
   serializer_class = MasterBudgetWithCurrentBudgetSerializer
 
+  def perform_create(self, serializer):
+    user = self.request.user
+    serializer.save(user=user, household=user.household)
 
   def get_queryset(self):
     return MasterBudget.objects.filter(household=self.request.user.household)
 
   def get(self, request, *args, **kwargs):
     return self.list(request, *args, **kwargs)
+
+  def post(self, request, *args, **kwargs):
+    return self.create(request, *args, **kwargs)
+
+
+class UserListCreateView(generics.GenericAPIView, mixins.CreateModelMixin):
+  permission_classes = [AllowAny]
+  serializer_class = UserSerializer
+
+  @transaction.atomic
+  def post(self, request, *args, **kwargs):
+    return self.create(request, *args, **kwargs)
+
+class CategoryListCreateView(generics.GenericAPIView,
+                             mixins.CreateModelMixin,
+                             mixins.ListModelMixin):
+
+  permission_classes = [IsAuthenticated]
+  serializer_class = CategorySerializer
+  def get_queryset(self):
+    return Category.objects.filter(household = self.request.user.household)
+
+  def perform_create(self, serializer):
+    user = self.request.user
+    serializer.save(household=user.household)
+
+  def get(self, request, *args, **kwargs):
+    return self.list(request, *args, **kwargs)
+
+  def post(self, request, *args, **kwargs):
+    return self.create(request, *args, **kwargs)
+
+
 
