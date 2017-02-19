@@ -4,7 +4,6 @@ import inspect
 
 class UserSerializer(serializers.ModelSerializer):
   household = serializers.StringRelatedField()
-  # username = serializers.CharField()
   password = serializers.CharField(required=True, write_only=True)
   auth_token = serializers.CharField(read_only=True)
 
@@ -20,6 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
     household = Household.objects.create(name=household_name)
     user = User(**validated_data)
     user.household = household
+    user.email = user.username
     user.set_password(validated_data['password'])
     user.save()
     return user

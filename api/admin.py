@@ -4,12 +4,24 @@ from django.contrib import admin
 
 from .models import *
 
+class UserInline(admin.StackedInline):
+  model = User
+  fields = ('username',)
+  extra = 0
+
+
 class HouseholdAdmin(admin.ModelAdmin):
-    pass
+  inlines = [
+    UserInline
+  ]
 
 @admin.register(Budget)
 class BudgetAdmin(admin.ModelAdmin):
-  list_display = ('id','get_name', 'get_amount', 'remainder', 'get_period', 'start_time', 'end_time')
+  list_display = (
+    'id','get_name', 'get_amount',
+    'remainder', 'get_period',
+    'start_time', 'end_time',
+  )
   def get_name(self, obj):
     return obj.masterbudget.name
   def get_amount(self, obj):

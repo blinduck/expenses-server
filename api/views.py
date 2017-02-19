@@ -9,6 +9,7 @@ from .permissions import IsOwner
 from django.contrib.auth import authenticate
 from datetime import datetime
 from django.db import transaction
+from django.db.models import Q
 
 
 # Create your views here.
@@ -33,7 +34,11 @@ def login(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def base_data(request):
-  masterbudgets = MasterBudget.objects.filter(user=request.user)
+  masterbudgets = MasterBudget.objects.filter(
+    household=request.user.household
+  ).exclude(
+    Q(expense_type = 'Personal') & ~Q(user = request.user)
+  )
   categories = Category.objects.filter(household=request.user.household)
 
   data = {
@@ -104,7 +109,11 @@ class MasterBudgetList(generics.GenericAPIView,
     serializer.save(user=user, household=user.household)
 
   def get_queryset(self):
-    return MasterBudget.objects.filter(household=self.request.user.household)
+    return MasterBudget.objects.filter(
+      household=self.request.user.household
+    ).exclude(
+      Q(expense_type = 'Personal') & ~Q(user = self.request.user)
+    )
 
   def get(self, request, *args, **kwargs):
     return self.list(request, *args, **kwargs)
