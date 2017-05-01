@@ -41,6 +41,9 @@ class RecordAdmin(admin.ModelAdmin):
   list_display = ('name', 'amount', 'category', 'type', 'budget', 'user', 'time')
 
 
-admin.site.register(User)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+  list_display = ('username', 'email', 'token')
+
 admin.site.register(Household, HouseholdAdmin)
 admin.site.register(Category)

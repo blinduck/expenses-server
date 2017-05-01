@@ -138,6 +138,12 @@ class CategoryTest(TestCase):
     print(initial_cat_count, final_cat_count)
     assert (initial_cat_count + 1) == final_cat_count
 
+class RecordModelTest(TestCase):
+  pass
 
+class SummaryTest(TestCase):
+  def setUp(self):
+    pass
 
-
+  # expects a start and end date.
+  # for records within this period, group and sum

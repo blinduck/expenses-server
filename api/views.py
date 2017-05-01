@@ -37,6 +37,7 @@ def base_data(request):
   masterbudgets = MasterBudget.objects.filter(
     household=request.user.household
   ).exclude(
+    # exclude personal budgets that don't belong to the user
     Q(expense_type = 'Personal') & ~Q(user = request.user)
   )
   categories = Category.objects.filter(household=request.user.household)
@@ -47,6 +48,19 @@ def base_data(request):
     'record_type_choices': [x[0] for x in Record.TYPE_CHOICES]
   }
   return Response(data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def summary(request):
+  user = request.user
+  current_date = datetime.now()
+  year = int(request.query_params.get('year', current_date.year))
+  month = int(request.query_params.get('month', current_date.month))
+  type = request.query_params.get('type', 'all')
+  data = {}
+  data['category_summary'] = Record.monthly_category_summary(
+    user, year, month, type)
+  return Response(data=data)
 
 class RecordList(generics.GenericAPIView,
                  mixins.ListModelMixin,
@@ -61,8 +75,10 @@ class RecordList(generics.GenericAPIView,
       return RecordCreateSerializer
 
   def get_queryset(self):
-    startDate = datetime.utcfromtimestamp(float(self.request.query_params['startDate']))
-    endDate = datetime.utcfromtimestamp(float(self.request.query_params['endDate']))
+    startDate = datetime.utcfromtimestamp(
+      float(self.request.query_params['startDate']))
+    endDate = datetime.utcfromtimestamp(
+      float(self.request.query_params['endDate']))
     expenseType = self.request.query_params['expenseType']
     querySet =  Record.objects.filter(
       user=self.request.user,

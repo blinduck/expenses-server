@@ -26,7 +26,8 @@ class Budget(models.Model):
 
   @classmethod
   def get_or_create_budget(cls,masterbudget):
-    # todo change the timezone implementation -> save the timezone on the user object, pass it in here
+    # todo change the timezone implementation
+    # -> save the timezone on the user object, pass it in here
     budget = Budget.current_budget(masterbudget)
     if budget: return budget
     span = Budget.get_span(masterbudget.period)
