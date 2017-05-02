@@ -1,3 +1,4 @@
+appdirs==1.4.3
 arrow==0.10.0
 bleach==1.5.0
 decorator==4.0.10
@@ -23,6 +24,7 @@ mistune==0.7.3
 nbconvert==5.0.0
 nbformat==4.2.0
 notebook==4.3.1
+packaging==16.8
 pandocfilters==1.4.1
 parse-rest==0.2.20141004
 pexpect==4.2.1
