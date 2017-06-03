@@ -38,7 +38,7 @@ class MasterBudgetAdmin(admin.ModelAdmin):
 
 @admin.register(Record)
 class RecordAdmin(admin.ModelAdmin):
-  list_display = ('name', 'amount', 'category', 'type', 'budget', 'user', 'time')
+  list_display = ('name', 'amount', 'type', 'budget', 'user', 'time')
 
 
 @admin.register(User)
