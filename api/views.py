@@ -80,15 +80,25 @@ class RecordList(generics.GenericAPIView,
             return RecordCreateSerializer
 
     def get_queryset(self):
+        user = self.request.user
+        household = user.household
+        print(user, household)
         startDate = datetime.utcfromtimestamp(
             float(self.request.query_params['startDate']))
         endDate = datetime.utcfromtimestamp(
             float(self.request.query_params['endDate']))
         expenseType = self.request.query_params['expenseType']
+
         querySet = Record.objects.filter(
-            user=self.request.user,
+            household=household,
             time__range=(startDate, endDate)
         )
+        print(querySet.count())
+        querySet = querySet.filter(
+            Q(type='Household') |
+            Q(user=user))
+
+        print(querySet.count())
         if expenseType is not None and expenseType in ['Personal', 'Household']:
             querySet = querySet.filter(type=expenseType)
         querySet = querySet.order_by('-time')
@@ -162,11 +172,13 @@ class CategoryListCreateView(generics.GenericAPIView,
     serializer_class = CategorySerializer
 
     def get_queryset(self):
-        return Category.objects.filter(household=self.request.user.household)
+        user = self.request.user
+        return Category.objects.filter(household=user.household)\
+            .filter(Q(cat_type="Household") | Q(user=user))
 
     def perform_create(self, serializer):
         user = self.request.user
-        serializer.save(household=user.household)
+        serializer.save(household=user.household, user=user)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
