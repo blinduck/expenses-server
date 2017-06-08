@@ -43,7 +43,9 @@ def base_data(request):
         Q(expense_type='Personal') & ~Q(user=request.user)
     )
     # todo. exclude categories that don't belong to you
-    categories = Category.objects.filter(household=request.user.household)
+    user = request.user
+    categories = Category.objects.filter(household=user.household) \
+        .filter(Q(cat_type="Household") | Q(user=user))
 
     data = {
         'masterbudgets': MasterBudgetSerializer(masterbudgets, many=True).data,
