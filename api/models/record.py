@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.db.models import Sum
+
 from .category import Category
 from .budget import Budget
 import arrow
@@ -32,11 +34,11 @@ class Record(models.Model):
     masterbudget = models.ForeignKey('MasterBudget', null=True, blank=True)
     budget = models.ForeignKey('Budget', null=True, blank=True)
 
-    def clean(self):
-        if self.category is not None and self.category not in self.acceptable_categories():
-            raise ValidationError({
-                'category': "Invalid Category: {}".format(self.category)
-            })
+    # def clean(self):
+    #     if self.categories is not None and self.categories not in self.acceptable_categories():
+    #         raise ValidationError({
+    #             'category': "Invalid Category: {}".format(self.category)
+    #         })
 
     def save(self, *args, **kwargs):
         logger.info('save called')
@@ -51,7 +53,7 @@ class Record(models.Model):
 
     @classmethod
     def for_month(cls, user, calendar_year,
-                  calendar_month, expense_type='all'):
+                  calendar_month, expense_type='all', household=None):
 
         # get a time range
         span = [
@@ -60,9 +62,12 @@ class Record(models.Model):
             ).span('month')
         ]
         records = cls.objects.filter(
-            user=user,
             time__range=span
         )
+        if household:
+            records = records.filter(household=household)
+        if user:
+            records = records.filter(user=user)
         if expense_type != 'all':
             records = records.filter(type=expense_type)
 
@@ -87,6 +92,15 @@ class Record(models.Model):
             for cat in r.categories.all():
                 groupedCat[cat.name] = groupedCat.get('cat.name', 0) + r.amount
         return {k: float(v) for k, v in groupedCat.items()}.items()
+
+    @classmethod
+    def type_summary(cls, user, year, month):
+        records = cls.for_month(None, year, month, expense_type='all')
+        personal_records = records.filter(user=user, type="Personal")
+        household_records = records.filter(type="Household")
+        summary = personal_records.aggregate(Personal=Sum('amount'))
+        summary['Household'] = list(household_records.values('user__username').annotate(total=Sum('amount')))
+        return summary
 
     def handle_category(self):
         pass

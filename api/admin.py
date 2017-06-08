@@ -46,6 +46,8 @@ class MasterBudgetAdmin(admin.ModelAdmin):
 @admin.register(Record)
 class RecordAdmin(admin.ModelAdmin):
     list_display = ('name', 'amount', 'type', 'budget', 'user', 'time')
+    list_filter = ("household",)
+    date_hierarchy = 'time'
 
 
 @admin.register(User)

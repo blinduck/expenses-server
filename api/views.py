@@ -63,8 +63,12 @@ def summary(request):
     year = int(request.query_params.get('year', current_date.year))
     month = int(request.query_params.get('month', current_date.month))
     type = request.query_params.get('type', 'all')
-    data = {'category_summary': Record.monthly_category_summary(
-        user, year, month, type)}
+    data = {
+        'category_summary': Record.monthly_category_summary(
+            user, year, month, type
+        ),
+        'type_summary': Record.type_summary(user, year, month)
+    }
     return Response(data=data)
 
 
