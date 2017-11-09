@@ -99,12 +99,11 @@ class RecordList(generics.GenericAPIView,
             household=household,
             time__range=(startDate, endDate)
         )
-        print(querySet.count())
+        # any household expense, or a user's personal expenses
         querySet = querySet.filter(
             Q(type='Household') |
             Q(user=user))
 
-        print(querySet.count())
         if expenseType is not None and expenseType in ['Personal', 'Household']:
             querySet = querySet.filter(type=expenseType)
         querySet = querySet.order_by('-time')
@@ -115,6 +114,20 @@ class RecordList(generics.GenericAPIView,
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+class BudgetsWithRecords(generics.GenericAPIView, mixins.ListModelMixin):
+    permission_classes = [IsAuthenticated]
+    serializer_class = BudgetWithRecordsSeralizer
+
+    def get_queryset(self):
+        self.mb = MasterBudget.objects.get(id = self.request.query_params['mb_id'])
+        return Budget.objects.filter(masterbudget=self.mb)
+
+    def get(self, request, *args, **kwargs):
+        response = super().list(request, args, **kwargs)
+        response.data['budgetName'] = self.mb.name
+        return response
+
 
 
 class RecordDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
@@ -191,3 +204,5 @@ class CategoryListCreateView(generics.GenericAPIView,
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+
