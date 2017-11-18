@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^budgets_with_records$', views.BudgetsWithRecords.as_view(), name='records_list_by_budget'),
     url(r'^master_budgets$', views.MasterBudgetList.as_view(), name='master_budget_list'),
     url(r'^categories$', views.CategoryListCreateView.as_view(), name='category_list'),
+    url(r'^categories/(?P<pk>[0-9]+)$', views.CategoryDetailView.as_view(), name='category_list'),
     url(r'^summary$', views.summary, name='summary_view')
 
 ]
