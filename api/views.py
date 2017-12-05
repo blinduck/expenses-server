@@ -36,6 +36,9 @@ def login(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def base_data(request):
+    ## data that is required when addding a record
+    ## user needs to select from the available budgets, categories and record_types
+
     masterbudgets = MasterBudget.objects.filter(
         household=request.user.household
     ).exclude(
@@ -130,7 +133,11 @@ class BudgetsWithRecords(generics.GenericAPIView, mixins.ListModelMixin):
 
 
 
-class RecordDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
+class RecordDetail(
+    mixins.RetrieveModelMixin,
+    generics.GenericAPIView,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin):
     # todo implement proper object level permissions for the records.
     queryset = Record.objects.all()
     serializer_class = RecordCreateSerializer
@@ -138,6 +145,12 @@ class RecordDetail(mixins.RetrieveModelMixin, generics.GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 
 class BudgetList(generics.GenericAPIView, mixins.ListModelMixin):

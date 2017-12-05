@@ -14,11 +14,17 @@ class RecordCreateSerializer(serializers.ModelSerializer):
 
 class RecordListSerializer(serializers.ModelSerializer):
     
-    masterbudget = serializers.PrimaryKeyRelatedField(
-        queryset=MasterBudget.objects.all(), allow_null=True)
+    masterbudget = serializers.StringRelatedField(read_only=True)
     budget = serializers.PrimaryKeyRelatedField(
         read_only=True
     )
+
+    class CategorySerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Category
+            fields =  "__all__"
+
+    categories = CategorySerializer(many=True, read_only=True, )
 
     class Meta:
         model = Record

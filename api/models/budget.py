@@ -3,9 +3,10 @@ import arrow
 from datetime import datetime
 import logging
 from django.dispatch import receiver
+from django.db.models import Sum
 
 logger = logging.getLogger('django')
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 
 
 class Budget(models.Model):
@@ -84,10 +85,12 @@ class Budget(models.Model):
         pass
 
 
+@receiver(post_delete, sender='api.Record')
 @receiver(post_save, sender='api.Record')
 def update_budget(sender, instance, **kwargs):
     if instance.budget is None:
         return
     budget = instance.budget
-    budget.remainder -= instance.amount
+    total = budget.record_set.aggregate(total=Sum('amount'))['total'] or 0
+    budget.remainder = budget.masterbudget.amount - total
     budget.save()
