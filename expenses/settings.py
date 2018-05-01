@@ -24,7 +24,7 @@ SECRET_KEY = ')a!vlrfv+qs)ow9bz9fx5og2p*n1zdg9-0)6otm%8vdvq$860m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['expenses.dev', 'localhost', '54.152.127.7']
+ALLOWED_HOSTS = ['expenses.test', 'localhost', '54.152.127.7']
 
 # Application definition
 

@@ -12,8 +12,6 @@ logger = logging.getLogger('django')
 
 
 class Record(models.Model):
-    # when querying for record list, i hard coded that this are the possible types.
-    # when switching to foreignkey types, change that as well
     TYPE_CHOICES = (
         ('Personal', 'Personal'),
         ('Household', 'Household')
@@ -41,7 +39,6 @@ class Record(models.Model):
     #         })
 
     def save(self, *args, **kwargs):
-        logger.info('save called')
         if (self.masterbudget is not None) and self.budget is None:
             self.budget = Budget.get_or_create_budget(self.masterbudget)
         if self.household is None:
@@ -95,10 +92,12 @@ class Record(models.Model):
 
     @classmethod
     def type_summary(cls, user, year, month):
+        summary = {}
         records = cls.for_month(None, year, month, expense_type='all')
         personal_records = records.filter(user=user, type="Personal")
         household_records = records.filter(type="Household")
-        summary = personal_records.aggregate(Personal=Sum('amount'))
+        summary["Personal"] = personal_records.aggregate(Personal=Sum('amount'))['Personal'] if personal_records else 0
+        # summary = personal_records.aggregate(Personal=Sum('amount'))
         summary['Household'] = list(household_records.values('user__username').annotate(total=Sum('amount')))
         return summary
 

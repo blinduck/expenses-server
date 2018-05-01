@@ -30,6 +30,8 @@ class Budget(models.Model):
     def get_or_create_budget(cls, masterbudget):
         # todo change the timezone implementation
         # -> save the timezone on the user object, pass it in here
+        # todo THIS IS AN ERROR
+        # todo do not get current budget, get the budget for the record time
         budget = Budget.current_budget(masterbudget)
         if budget: return budget
         span = Budget.get_span(masterbudget.period)
