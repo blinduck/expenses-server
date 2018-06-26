@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.db.models import Sum
+from django.db.models import Sum, Q
 
 from .category import Category
 from .budget import Budget
@@ -53,14 +53,15 @@ class Record(models.Model):
                   calendar_month, expense_type='all', household=None):
 
         # get a time range
-        span = [
-            d.datetime for d in arrow.Arrow(
-                calendar_year, calendar_month, 1
-            ).span('month')
-        ]
-        records = cls.objects.filter(
-            time__range=span
-        )
+        # span = [
+        #     d.datetime for d in arrow.Arrow(
+        #         calendar_year, calendar_month, 1
+        #     ).span('month')
+        # ]
+        # records = cls.objects.filter(
+        #     time__range=span
+        # )
+        records = cls.objects.filter(time__year = calendar_year, time__month=calendar_month)
         if household:
             records = records.filter(household=household)
         if user:
@@ -79,15 +80,31 @@ class Record(models.Model):
     # can cache this somewhere
     # update whenever a record is created.
     def monthly_category_summary(cls, user, year, month, expense_type='all'):
-        records = cls.for_month(user, year, month, expense_type)
+
+        categories = Category.objects.filter(Q(cat_type='Household') | Q(cat_type='Personal', user=user))
         groupedCat = {}
-        for r in records:
-            if not r.categories.exists():
-                groupedCat['Uncategorized'] = groupedCat.get('Uncategorized', 0) + r.amount
-                continue
-            for cat in r.categories.all():
-                groupedCat[cat.name] = groupedCat.get(cat.name, 0) + r.amount
-        return {k: float(v) for k, v in groupedCat.items()}.items()
+        for cat in categories:
+            records = cat.record_set.filter(time__year=2018, time__month=month)
+            if expense_type != 'all':
+                records = records.filter(type=expense_type)
+            groupedCat[cat.name] = records.aggregate(total=Sum('amount'))['total']
+
+        records = cls.objects.filter(time__year=2018, time__month=month, categories=None)
+        if expense_type != 'all':
+            records = records.filter(type=expense_type)
+        groupedCat['Uncategorized'] = records.aggregate(total=Sum('amount'))['total']
+
+        # records = cls.objects.filter(household=user.household, time__year = year, time__month = month)
+        # if expense_type != 'all':
+        #     records = records.filter(type=expense_type)
+        # groupedCat = {}
+        # for r in records:
+        #     if not r.categories.exists():
+        #         groupedCat['Uncategorized'] = groupedCat.get('Uncategorized', 0) + r.amount
+        #         continue
+        #     for cat in r.categories.all():
+        #         groupedCat[cat.name] = groupedCat.get(cat.name, 0) + r.amount
+        return {k: float(v) for k, v in groupedCat.items() if v}.items()
 
     @classmethod
     def type_summary(cls, user, year, month):
