@@ -79,7 +79,6 @@ class Record(models.Model):
     # can cache this somewhere
     # update whenever a record is created.
     def monthly_category_summary(cls, user, year, month, expense_type='all'):
-        print("expense type", expense_type)
         records = cls.for_month(user, year, month, expense_type)
         groupedCat = {}
         for r in records:
@@ -87,7 +86,7 @@ class Record(models.Model):
                 groupedCat['Uncategorized'] = groupedCat.get('Uncategorized', 0) + r.amount
                 continue
             for cat in r.categories.all():
-                groupedCat[cat.name] = groupedCat.get('cat.name', 0) + r.amount
+                groupedCat[cat.name] = groupedCat.get(cat.name, 0) + r.amount
         return {k: float(v) for k, v in groupedCat.items()}.items()
 
     @classmethod
