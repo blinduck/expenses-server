@@ -5,7 +5,6 @@ from . import views
 urlpatterns = [
     url(r'^login$', views.login),
     url(r'^base_data$', views.base_data),
-    url(r'^test$', views.test),
     url(r'^users', views.UserListCreateView.as_view(), name='users_list'),
     # url(r'^records$', views.records_list, name ='records_list'),
     url(r'^records$', views.RecordList.as_view(), name='records_list'),

@@ -14,11 +14,6 @@ from django.db.models import Q
 
 # Create your views here.
 
-def test(request):
-    print('test')
-    return HttpResponse('testing')
-
-
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def login(request):
@@ -45,7 +40,6 @@ def base_data(request):
         # exclude personal budgets that don't belong to the user
         Q(expense_type='Personal') & ~Q(user=request.user)
     )
-    # todo. exclude categories that don't belong to you
     user = request.user
     categories = Category.objects.filter(household=user.household) \
         .filter(Q(cat_type="Household") | Q(user=user))
@@ -80,7 +74,6 @@ class RecordList(generics.GenericAPIView,
                  mixins.CreateModelMixin):
     permission_classes = [IsAuthenticated]
 
-    # serializer_class = RecordCreateSerializer
 
     def get_serializer_class(self, *args, **kwargs):
         if self.request.method == 'GET':
@@ -91,7 +84,6 @@ class RecordList(generics.GenericAPIView,
     def get_queryset(self):
         user = self.request.user
         household = user.household
-        print(user, household)
         startDate = datetime.utcfromtimestamp(
             float(self.request.query_params['startDate']))
         endDate = datetime.utcfromtimestamp(
@@ -104,8 +96,8 @@ class RecordList(generics.GenericAPIView,
         )
         # any household expense, or a user's personal expenses
         querySet = querySet.filter(
-            Q(type='Household') |
-            Q(user=user))
+            Q(type='Household') | Q(user=user)
+        )
 
         if expenseType is not None and expenseType in ['Personal', 'Household']:
             querySet = querySet.filter(type=expenseType)
@@ -138,7 +130,9 @@ class RecordDetail(
     generics.GenericAPIView,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin):
+
     # todo implement proper object level permissions for the records.
+
     queryset = Record.objects.all()
     serializer_class = RecordCreateSerializer
     permission_classes = [IsAuthenticated, IsOwner]
