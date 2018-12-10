@@ -10,7 +10,10 @@ from django.contrib.auth import authenticate
 from datetime import datetime
 from django.db import transaction
 from django.db.models import Q
+from .sheet_data import get_data, write_to_row
+import logging
 
+logger = logging.getLogger('django')
 
 # Create your views here.
 
@@ -230,3 +233,39 @@ class CategoryDetailView(generics.GenericAPIView,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class TimJean(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.CreateModelMixin):
+    permission_classes = []
+    authentication_classes = []
+
+    def get(self, request, *args, **kwargs):
+        data =  get_data()
+        return Response(data)
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        print(data)
+        index = data.get('perms').get('index')
+        data = [
+            "Yes",
+            data.get('attendingChurch', ""),
+            data.get('churchTotal', ""),
+            data.get('attendingDinner', ""),
+            data.get('dietaryRestriction', ""),
+            data.get('dinnerTotalComing', "")
+        ]
+        resp = write_to_row(index, data)
+        return Response()
+
+
+class ChatBot(generics.GenericAPIView, mixins.CreateModelMixin):
+    permission_classes = []
+    authentication_classes = []
+
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        logger = logging.getLogger("django")
+        return Response({"test": "test"})
+
