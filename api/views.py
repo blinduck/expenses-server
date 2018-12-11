@@ -239,6 +239,9 @@ class TimJean(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.CreateM
     permission_classes = []
     authentication_classes = []
 
+    def get_serializer(self, *args, **kwargs):
+        return None
+
     def get(self, request, *args, **kwargs):
         data =  get_data()
         return Response(data)
@@ -262,6 +265,9 @@ class TimJean(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.CreateM
 class ChatBot(generics.GenericAPIView, mixins.CreateModelMixin):
     permission_classes = []
     authentication_classes = []
+
+    def get_serializer(self, *args, **kwargs):
+        return None
 
 
     def post(self, request, *args, **kwargs):
