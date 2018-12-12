@@ -266,12 +266,8 @@ class ChatBot(generics.GenericAPIView, mixins.CreateModelMixin):
     permission_classes = []
     authentication_classes = []
 
-    def get_serializer(self, *args, **kwargs):
-        return None
-
-
     def post(self, request, *args, **kwargs):
         data = request.data
-        logger = logging.getLogger("django")
+        logger.info(data)
         return Response({"test": "test"})
 
