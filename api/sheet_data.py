@@ -20,7 +20,7 @@ def convert_plus1(val):
     if not val:
         return 0
     if val.strip() == "Yes":
-        return 1
+        return 2
     else:
         return len(val.split(','))
 

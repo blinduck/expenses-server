@@ -266,6 +266,8 @@ class ChatBot(generics.GenericAPIView, mixins.CreateModelMixin):
     permission_classes = []
     authentication_classes = []
 
+
+
     def post(self, request, *args, **kwargs):
         data = request.data
         logger.info(data)
