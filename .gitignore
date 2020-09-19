@@ -4,3 +4,5 @@ expenses/local_settings.py
 *.log
 api/fixtures/
 *.ipynb
+venv/*
+venv
