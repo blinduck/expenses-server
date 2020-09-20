@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 ]
 
 CRONJOBS = [
-    ('* * * * *', 'api.cron.test_selenium')
+    ('1 16 * * 1', 'api.cron.test_timing')
 ]
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

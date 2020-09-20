@@ -1,6 +1,6 @@
 appdirs==1.4.3
 appnope==0.1.0
-arrow==0.10.0
+arrow==0.16.0
 backcall==0.1.0
 bleach==3.0.2
 cachetools==3.0.0
