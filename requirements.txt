@@ -11,7 +11,7 @@ django-cors-headers==2.4.0
 django-crontab==0.7.1
 django-extensions==1.7.5
 django-filter==1.0.1
-djangorestframework==3.5.3
+djangorestframework==3.9.1
 entrypoints==0.2.3
 google-api-python-client==1.7.4
 google-auth==1.6.0
