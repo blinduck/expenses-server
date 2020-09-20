@@ -10,14 +10,12 @@ from django.contrib.auth import authenticate
 from datetime import datetime
 from django.db import transaction
 from django.db.models import Q
+from .sheet_data import get_data, write_to_row
+import logging
 
+logger = logging.getLogger('django')
 
 # Create your views here.
-
-def test(request):
-    print('test')
-    return HttpResponse('testing')
-
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -45,7 +43,6 @@ def base_data(request):
         # exclude personal budgets that don't belong to the user
         Q(expense_type='Personal') & ~Q(user=request.user)
     )
-    # todo. exclude categories that don't belong to you
     user = request.user
     categories = Category.objects.filter(household=user.household) \
         .filter(Q(cat_type="Household") | Q(user=user))
@@ -80,7 +77,6 @@ class RecordList(generics.GenericAPIView,
                  mixins.CreateModelMixin):
     permission_classes = [IsAuthenticated]
 
-    # serializer_class = RecordCreateSerializer
 
     def get_serializer_class(self, *args, **kwargs):
         if self.request.method == 'GET':
@@ -91,7 +87,6 @@ class RecordList(generics.GenericAPIView,
     def get_queryset(self):
         user = self.request.user
         household = user.household
-        print(user, household)
         startDate = datetime.utcfromtimestamp(
             float(self.request.query_params['startDate']))
         endDate = datetime.utcfromtimestamp(
@@ -104,8 +99,8 @@ class RecordList(generics.GenericAPIView,
         )
         # any household expense, or a user's personal expenses
         querySet = querySet.filter(
-            Q(type='Household') |
-            Q(user=user))
+            Q(type='Household') | Q(user=user)
+        )
 
         if expenseType is not None and expenseType in ['Personal', 'Household']:
             querySet = querySet.filter(type=expenseType)
@@ -138,7 +133,9 @@ class RecordDetail(
     generics.GenericAPIView,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin):
+
     # todo implement proper object level permissions for the records.
+
     queryset = Record.objects.all()
     serializer_class = RecordCreateSerializer
     permission_classes = [IsAuthenticated, IsOwner]
@@ -236,3 +233,43 @@ class CategoryDetailView(generics.GenericAPIView,
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class TimJean(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.CreateModelMixin):
+    permission_classes = []
+    authentication_classes = []
+
+    def get_serializer(self, *args, **kwargs):
+        return None
+
+    def get(self, request, *args, **kwargs):
+        data =  get_data()
+        return Response(data)
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        print(data)
+        index = data.get('perms').get('index')
+        data = [
+            "Yes",
+            data.get('attendingChurch', ""),
+            data.get('churchTotal', ""),
+            data.get('attendingDinner', ""),
+            data.get('dietaryRestriction', ""),
+            data.get('dinnerTotalComing', "")
+        ]
+        resp = write_to_row(index, data)
+        return Response()
+
+
+class ChatBot(generics.GenericAPIView, mixins.CreateModelMixin):
+    permission_classes = []
+    authentication_classes = []
+
+
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        logger.info(data)
+        return Response({"test": "test"})
+

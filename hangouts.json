@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "tidal-osprey-225107",
+  "private_key_id": "1e305571744bfa36938d50a89155c351c4d058e5",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDNugjDcD1N0ziY\nNkLwbBDAxKvL0F1yPKYl7H0J9lKxEiuqVwdxcu3Pg1W0wdaFnkjOG0R8/oYuGZAJ\nP22STNiGnATtyVX8mKBAymfpSS9Qe5lv5yHlNaCP6Nm2rjcEvMfrEeMvmTvh1CHN\nIKb6VHUgM7Rx3wx+sRQLMlZ4PWS89oZbRKtdVgOefsHqvc4kdm+2QCXp2auRBhFn\nBh9efwf2AnzzFmetfv1lwXvixtceQbadOg9eSTpcmOWFlMMnhJSbbtP3yf7EOZAB\n1m7dOQpnkQfEUnGRNkYcRIenUj3haLfw68JEs3h896BXlGs2FgEMv0WYo/0pFTqP\nJKl65zO5AgMBAAECggEAF6CNyJpfpAxF4+9ZbUDQBL+hpmkCDnBqOZFJRAdi9Fys\noKXZoD0tlEdWZMndUB+/Z1Jo4X0e3nUHnpRHCoYiWQVaqI+WvUmvH/nPCNMjqLfl\nRZ2TPj6UN+rrdChaf8QJptT5VVphLvy8vBELtFTWVdIyX2CZUASY03deyHTumKf3\nxLJp5SjjruTWDHqbYvHTAIFEpXAQCvRp233u2NMD74O1d1RIAMb5aiWSF04jwjlf\n4gX+JoHGCn4LypgpQkrXk6cZt3qoz2KYjYeIveKsW0xQA4D55gg1c97z71gKV26X\nZ5amA3b6Kiiq5c4s6ssFnTW3N8LQ96P4QV0l6drwnQKBgQDtOYKsIlQp8YtWitGc\nJMLzLGG8aqZzAsDXkQSsM4oTPRCbwNH1gWt0RzxIi9WhzjjXwUdICg+agdUzFZdg\nmUlJrAxQSY+jHUWXxXCHgSWC7MAOMqERRTRhC76PXJCpe6n9DZXBFn1J0fEcb6Qu\nL11eYoPTseupa8Omp4WM9nPvPQKBgQDeAlU/uSpHZ98s/GXtzY9rJa+J06luLNPT\n5YoOX3e00kMKoVVupDUiCqqSWRGRinZ4fIgnTWze08fPszUpQ5AzHkxir6tPhFCh\nCIkHaQVP/Xe+AwVy3gAXuQWoWong8UO/hBvmbRvTu3er3NBjFjc9ZRDoJ0G1/kRK\nhV9hZEEeLQKBgHmUI/h8j43/kV4FP3A7Fv7yHBUow63mF1djp3Vp5LX/ceehZvng\nHmY1rBuyLwcCXfeVwyaUoXKaX94SjsafSQRM/PKZANikQ+qI8idAdS0okTW1lP74\n7ONf1YY79pgmHPToZXvUPtn6kwvz270f4UZiTxXL9e+an2dmK/gWx0wxAoGBAIVS\nx1k+XLqHEYqVhKzbvp4tAo71spE8kHV3KoJZKK1JfANdQc3xBQuNdkPvA1Lw4RaY\nSre3koL6kcsUpv9B2M4qCttU/b8CCd27H3d4xTz1TbypWdNSqKGWdmRVAuo4WWQg\n9RRbP9PWiBaIxAhNZh0TnaSdNqQRr3dFQzNcnpJ9AoGARpIKMEQz2zR+OiPQ1NPb\ntDqadpVJicMDfg+Iwff1KMl4HnWwo7eKlCDg3dkJcB6eHYJKHhysflTWvcdmzViz\nhyyY7UGv/XuH2rD0IDlHwfFXSfi0NifKDJG+bssnC26tZuApd7QfsemRMIUuhfdA\nZXQ2CN+eKf49jknpSNn43to=\n-----END PRIVATE KEY-----\n",
+  "client_email": "starting-account-gk4rrs8z8s0k@tidal-osprey-225107.iam.gserviceaccount.com",
+  "client_id": "102372773452824900829",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/starting-account-gk4rrs8z8s0k%40tidal-osprey-225107.iam.gserviceaccount.com"
+}

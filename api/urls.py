@@ -5,7 +5,6 @@ from . import views
 urlpatterns = [
     url(r'^login$', views.login),
     url(r'^base_data$', views.base_data),
-    url(r'^test$', views.test),
     url(r'^users', views.UserListCreateView.as_view(), name='users_list'),
     # url(r'^records$', views.records_list, name ='records_list'),
     url(r'^records$', views.RecordList.as_view(), name='records_list'),
@@ -15,6 +14,8 @@ urlpatterns = [
     url(r'^master_budgets$', views.MasterBudgetList.as_view(), name='master_budget_list'),
     url(r'^categories$', views.CategoryListCreateView.as_view(), name='category_list'),
     url(r'^categories/(?P<pk>[0-9]+)$', views.CategoryDetailView.as_view(), name='category_list'),
-    url(r'^summary$', views.summary, name='summary_view')
+    url(r'^summary$', views.summary, name='summary_view'),
+    url(r'^timjean$', views.TimJean.as_view(), name='timjean'),
+    url(r'^asdfasdfasdfasdf$', views.ChatBot.as_view(), name='timjean')
 
 ]

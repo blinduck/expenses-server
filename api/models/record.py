@@ -32,12 +32,6 @@ class Record(models.Model):
     masterbudget = models.ForeignKey('MasterBudget', null=True, blank=True)
     budget = models.ForeignKey('Budget', null=True, blank=True)
 
-    # def clean(self):
-    #     if self.categories is not None and self.categories not in self.acceptable_categories():
-    #         raise ValidationError({
-    #             'category': "Invalid Category: {}".format(self.category)
-    #         })
-
     def save(self, *args, **kwargs):
         if (self.masterbudget is not None) and self.budget is None:
             self.budget = Budget.get_or_create_budget(self.masterbudget)
@@ -52,15 +46,6 @@ class Record(models.Model):
     def for_month(cls, user, calendar_year,
                   calendar_month, expense_type='all', household=None):
 
-        # get a time range
-        # span = [
-        #     d.datetime for d in arrow.Arrow(
-        #         calendar_year, calendar_month, 1
-        #     ).span('month')
-        # ]
-        # records = cls.objects.filter(
-        #     time__range=span
-        # )
         records = cls.objects.filter(time__year = calendar_year, time__month=calendar_month)
         if household:
             records = records.filter(household=household)
@@ -94,16 +79,6 @@ class Record(models.Model):
             records = records.filter(type=expense_type)
         groupedCat['Uncategorized'] = records.aggregate(total=Sum('amount'))['total']
 
-        # records = cls.objects.filter(household=user.household, time__year = year, time__month = month)
-        # if expense_type != 'all':
-        #     records = records.filter(type=expense_type)
-        # groupedCat = {}
-        # for r in records:
-        #     if not r.categories.exists():
-        #         groupedCat['Uncategorized'] = groupedCat.get('Uncategorized', 0) + r.amount
-        #         continue
-        #     for cat in r.categories.all():
-        #         groupedCat[cat.name] = groupedCat.get(cat.name, 0) + r.amount
         return {k: float(v) for k, v in groupedCat.items() if v}.items()
 
     @classmethod
