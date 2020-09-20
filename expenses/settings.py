@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['expenses.test', 'localhost', '54.152.127.7']
 
 INSTALLED_APPS = [
   'django_extensions',
+  'django_crontab',
   'api.apps.ApiConfig',
   'rest_framework',
   'rest_framework.authtoken',
@@ -41,6 +42,9 @@ INSTALLED_APPS = [
   'django.contrib.staticfiles',
 ]
 
+CRONJOBS = [
+    ('* * * * *', 'api.cron.test_cron')
+]
 MIDDLEWARE = [
   'django.middleware.security.SecurityMiddleware',
   'django.contrib.sessions.middleware.SessionMiddleware',
